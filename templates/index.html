@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/assets/index-34fbc590.css" />
+
+    <title>PDF Answer AI</title>
+    <!-- Include jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+      #chatArea {
+        margin-top: 5vh;
+        padding-left: 2vw;
+       display: flex;
+       align-items: start;
+        overflow-y: auto;
+        margin-bottom: 20px;
+      }
+      .h{
+        margin: 20%;
+      }
+      .pt{
+        margin-top: 1vh;
+      }
+      .pb{
+        margin-bottom: 1vh;
+      }
+      .centre{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 5vh;
+        font-size:30px;
+        font-weight: 700;
+        text-decoration-line: underline;
+      }
+
+      .userMessage {
+        background-color: #e6f7ff;
+        padding: 5px;
+        margin: 5px 0;
+        border-radius: 5px;
+      }
+
+      .botMessage {
+        background-color: #f2f2f2;
+        padding: 5px;
+        margin: 5px 0;
+        border-radius: 5px;
+      }
+      .k{
+        color: #000;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- nav -->
+    <div class="w-full max-w-7xl shadow-md">
+      <div
+        x-data="{ open: false }"
+        class="flex flex-col max-w-screen-xl p-5 mx-auto md:items-center md:justify-between md:flex-row md:px-6 lg:px-8"
+      >
+        <div
+          class="flex flex-row items-center justify-between lg:justify-start"
+        >
+          <a
+            class="text-lg font-bold tracking-tighter text-blue-600 transition duration-500 ease-in-out transform tracking-relaxed lg:pr-8"
+            href="/groups/header/"
+          >
+            Streetify
+          </a>
+          <button
+            class="rounded-lg md:hidden focus:outline-none focus:shadow-outline"
+            @click="open = !open"
+          >
+            <svg fill="currentColor" viewBox="0 0 20 20" class="w-8 h-8">
+              <path
+                x-show="!open"
+                fill-rule="evenodd"
+                d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM9 15a1 1 0 011-1h6a1 1 0 110 2h-6a1 1 0 01-1-1z"
+                clip-rule="evenodd"
+              ></path>
+              <path
+                x-show="open"
+                fill-rule="evenodd"
+                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                clip-rule="evenodd"
+                style="display: none"
+              ></path>
+            </svg>
+          </button>
+        </div>
+        <nav
+          :class="{'flex': open, 'hidden': !open}"
+          class="flex-col flex-grow hidden md:flex md:justify-start md:flex-row"
+        >
+          <ul
+            class="space-y-2 list-none lg:space-y-0 lg:items-center lg:inline-flex"
+          >
+            <li>
+              <a
+                href="#"
+                class="px-2 lg:px-6 py-6 text-sm border-b-2 border-transparent hover:border-blue-600 leading-[22px] md:px-3 text-gray-500 hover:text-blue-500"
+              >
+                All <span class="hidden lg:inline"> features </span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                class="px-2 lg:px-6 py-6 text-sm border-b-2 border-transparent leading-[22px] md:px-3 text-gray-500 hover:text-blue-500 hover:border-blue-600"
+              >
+                FAQ
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://www.wickedtemplates.com/"
+                class="px-2 lg:px-6 py-6 text-sm border-b-2 border-transparent hover:border-blue-600 leading-[22px] md:px-3 text-gray-500 hover:text-blue-500"
+              >
+                Free <span class="hidden lg:inline">Trial </span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+    <!-- end nav -->
+    <h1 class="centre" >PDF Answer AI</h1>
+    <!-- PDF Upload Form -->
+    <div class="flex justify-center">
+      <form
+        id="pdfUploadForm"
+        enctype="multipart/form-data"
+        class="py-12 px-5 border-black border-dotted"
+      >
+        <label class="block pb"> Choose a PDF to Upload </label>
+        <input
+          type="file"
+          name="pdf_file"
+          accept=".pdf"
+          class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-500 file:text-white hover:file:bg-blue-600"
+        />
+        <div id="fileInfo">
+          <!-- File information will be displayed here -->
+          <span id="fileDetails"></span>
+          <!-- Remove icon -->
+          <span
+            id="removeIcon"
+            style="cursor: pointer; color: red; display: none"
+            >X</span
+          >
+        </div>
+
+        <input type="submit" value="Read PDF" class="pt" />
+      </form>
+    </div>
+
+    <!-- <form id="pdfUploadForm" enctype="multipart/form-data">
+      <label for="pdf_file">Choose a PDF file to upload:</label>
+      <input type="file" name="pdf_file" accept=".pdf" />
+      <div id="fileInfo">
+        
+        <span id="fileDetails"></span>
+        
+        <span id="removeIcon" style="cursor: pointer; color: red; display: none"
+          >X</span
+        >
+      </div>
+
+      <input type="submit" value="Read PDF" />
+    </form> -->
+
+    <!-- myform -->
+    <div id="queryForm" class="flex justify-center pt-6">
+      <form class="w-[60%]">
+        <label for="chat" class="sr-only">Your message</label>
+        <div
+          class="flex items-center px-3 py-2 rounded-lg bg-white dark:bg-gray-200"
+        >
+          <input
+            id="chat"
+            type="text"
+            name="query"
+            class="k shadow-2xl block mx-4 p-2.5 w-full text-sm text-white bg-white rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-100 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            placeholder="Enter you Query..."
+          ></input>
+          <button
+            type="submit"
+            class="inline-flex justify-center p-2 text-blue-600 rounded-full cursor-pointer hover:bg-blue-100 dark:text-blue-500 dark:hover:bg-gray-600"
+          >
+            <svg
+              class="w-5 h-5 rotate-90"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              viewBox="0 0 18 20"
+            >
+              <path
+                d="m17.914 18.594-8-18a1 1 0 0 0-1.828 0l-8 18a1 1 0 0 0 1.157 1.376L8 18.281V9a1 1 0 0 1 2 0v9.281l6.758 1.689a1 1 0 0 0 1.156-1.376Z"
+              />
+            </svg>
+            <span class="sr-only">Send message</span>
+          </button>
+        </div>
+      </form>
+    </div>
+    <div id="chatArea" class="h flex items-center rounded-lg bg-white dark:bg-gray-200"></div>
+    <!-- Output -->
+    <!-- End Output -->
+    <!-- end myform -->
+
+    
+    <!-- Query Form
+    <form id="queryForm">
+      <label for="query">Enter your Query:</label>
+      <input type="text" name="query" />
+      <input type="submit" value="Send" />
+    </form> -->
+    <!-- <div id="chatArea"></div> -->
+
+    <!-- JavaScript to handle form submissions using AJAX -->
+    <script>
+      $(document).ready(function () {
+        $('input[name="pdf_file"]').on("change", function () {
+          var file = this.files[0];
+          if (file) {
+            var fileSize = (file.size / 1024).toFixed(2); // size in KB
+            $("#fileDetails").text(
+              "File: " + file.name + " (" + fileSize + " KB)"
+            );
+            $("#removeIcon").show(); // Show the remove icon
+          } else {
+            $("#fileDetails").text("");
+            $("#removeIcon").hide(); // Hide the remove icon
+          }
+        });
+
+        $("#removeIcon").click(function () {
+          var fileName = $('input[name="pdf_file"]')[0].files[0].name;
+          var fileSize = $('input[name="pdf_file"]')[0].files[0].size;
+          $.ajax({
+            url: "/remove_pdf",
+            type: "POST",
+            data: { name: fileName, size: fileSize },
+            success: function (data) {
+              alert(data.message);
+              $("#fileDetails").text(""); // Clear file details
+              $("#removeIcon").hide(); // Hide the remove icon
+            },
+            error: function (error) {
+              alert(error.responseJSON.error);
+            },
+          });
+        });
+
+        // Display file name and size when a file is selected
+        $('input[name="pdf_file"]').on("change", function () {
+          var file = this.files[0];
+          if (file) {
+            var fileSize = (file.size / 1024).toFixed(2); // size in KB
+            $("#fileInfo").text(
+              "File: " + file.name + " (" + fileSize + " KB)"
+            );
+          } else {
+            $("#fileInfo").text("");
+          }
+        });
+
+        // Handle PDF upload form submission
+        $('input[name="pdf_file"]').on("change", function () {
+          $("#pdfUploadForm").submit();
+        });
+
+        $("#pdfUploadForm").submit(function (e) {
+          e.preventDefault();
+          var formData = new FormData(this);
+          $.ajax({
+            url: "/upload",
+            type: "POST",
+            data: formData,
+            success: function (data) {
+              // Display a message to the user after successful upload
+              alert("PDF uploaded and read successfully!");
+            },
+            error: function (error) {
+              // Display an error message if there's an issue with the upload
+              alert(error.responseJSON.error);
+            },
+            cache: false,
+            contentType: false,
+            processData: false,
+          });
+        });
+
+        // Handle query form submission
+        $("#queryForm").submit(function (e) {
+          e.preventDefault();
+
+          // Get user's query
+          let userQuery = $(this).find('input[name="query"]').val();
+
+          // Clear the input field immediately
+          $('input[name="query"]').val("");
+
+          // Display user's query in the chat area
+          $("#chatArea").append(
+            "<div class='userMessage'>You: " + userQuery + "</div>"
+          );
+
+          // Introduce a short delay before displaying the "typing..." message
+          setTimeout(function () {
+            let botPlaceholder = $(
+              '<div class="botMessage">Bot: <span>typing...</span></div>'
+            );
+            $("#chatArea").append(botPlaceholder);
+
+            // Introduce another delay before fetching the bot's response
+            setTimeout(function () {
+              $.ajax({
+                url: "/query",
+                type: "POST",
+                data: { query: userQuery }, // Send the user query
+                success: function (data) {
+                  // Update the bot's placeholder with the actual response
+                  botPlaceholder.find("span").text(data.response);
+                  // Scroll to the bottom of the chat area to show the latest messages
+                  $("#chatArea").scrollTop($("#chatArea")[0].scrollHeight);
+                },
+              });
+            }, 1500); // 1500 milliseconds (1.5 seconds) delay for the bot's response
+          }, 500); // 500 milliseconds (0.5 seconds) delay for the "typing..." message
+        });
+      });
+    </script>
+  </body>
+</html>

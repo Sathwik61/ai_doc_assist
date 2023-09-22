@@ -1,0 +1,5 @@
+Flask==1.1.2
+werkzeug==1.0.1
+PyPDF2==1.26.0
+openai==0.10.2
+sklearn==0.24.2
